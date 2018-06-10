@@ -15,11 +15,38 @@ PathMaker::~PathMaker()
 void PathMaker::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
-    //path
-    QVector<QPoint> polyPoints;
-    QString all = "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/trash.txt";
-    QFile myFile(all);
 
+    //make a pen
+    QPen shelfpen;
+    shelfpen.setWidth(4);
+    shelfpen.setColor(Qt::red);
+    painter.setPen(shelfpen);
+
+    //shelf
+    QString in = "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/shelf.txt";
+    readFile(in);
+
+    QVector<QPoint> linePoints;
+    foreach( QPoint point, polyPoints )
+        linePoints << point;
+    painter.drawPoints( linePoints );
+
+//    //path
+    in = "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/trash.txt";
+    readFile(in);
+    QPen linepen;
+    linepen.setWidth(4);
+    linepen.setColor(Qt::blue);
+    painter.setPen(linepen);
+    foreach( QPoint point, polyPoints )
+        linePoints << point;
+    painter.drawLines( linePoints );
+
+}
+
+void PathMaker::readFile(QString in)
+{
+    QFile myFile(in);
     if(!myFile.open(QIODevice::ReadOnly))
              QMessageBox::information(0,"info", myFile.errorString());
     QTextStream whole(&myFile);
@@ -33,34 +60,4 @@ void PathMaker::paintEvent(QPaintEvent *e)
         str = whole.readLine();
     }
     myFile.close();
-
-    //make a pen
-    QPen linepen;
-    linepen.setWidth(4);
-    linepen.setColor(Qt::red);
-    painter.setPen(linepen);
-    //
-    QVector<QPoint> linePoints;
-    foreach( QPoint point, polyPoints )
-        linePoints << point;
-    painter.drawLines( linePoints );
-
 }
-
-//void PathMaker::readFile()
-//{
-//    QString all = "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/trash.txt";
-//    QFile myFile(all);
-//    if(!myFile.open(QIODevice::ReadOnly))
-//             QMessageBox::information(0,"info", myFile.errorString());
-//    QTextStream whole(&myFile);
-
-//    QString str = whole.readLine();
-//    while(!whole.atEnd()){
-//        QStringList list = str.split(' ');
-//        int x = list.at(0).toInt();
-//        int y = list.at(1).toInt();
-//        polyPoints << QPoint(x,y);
-//    }
-//    myFile.close();
-//}
