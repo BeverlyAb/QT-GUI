@@ -20,13 +20,13 @@ class PathMaker : public QDialog
 public:
     explicit PathMaker(QWidget *parent = 0);
     ~PathMaker();
-    void readFile(QString in);
+    void readFile(QString in, QVector<QPoint> &polyPoints);
 
 private:
     Ui::PathMaker *ui;
 protected:
     void paintEvent(QPaintEvent *e );
-    QVector<QPoint> polyPoints;
+   // QVector<QPoint> polyPoints;
 };
 
 #endif // PATHMAKER_H

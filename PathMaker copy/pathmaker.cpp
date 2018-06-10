@@ -15,36 +15,34 @@ PathMaker::~PathMaker()
 void PathMaker::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
+    QVector<QPoint> shelfPt;
+    QVector<QPoint> pathPt;
 
+    QString in = "";
     //make a pen
     QPen shelfpen;
-    shelfpen.setWidth(4);
+    shelfpen.setWidth(10);
     shelfpen.setColor(Qt::red);
     painter.setPen(shelfpen);
 
     //shelf
-    QString in = "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/shelf.txt";
-    readFile(in);
-
-    QVector<QPoint> linePoints;
-    foreach( QPoint point, polyPoints )
-        linePoints << point;
-    painter.drawPoints( linePoints );
+    in = "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/shelf.txt";
+    readFile(in, shelfPt);
+    painter.drawPoints( shelfPt );
 
 //    //path
     in = "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/trash.txt";
-    readFile(in);
     QPen linepen;
-    linepen.setWidth(4);
+    linepen.setWidth(10);
     linepen.setColor(Qt::blue);
+
     painter.setPen(linepen);
-    foreach( QPoint point, polyPoints )
-        linePoints << point;
-    painter.drawLines( linePoints );
+    readFile(in, pathPt);
+    painter.drawPoints( pathPt );
 
 }
 
-void PathMaker::readFile(QString in)
+void PathMaker::readFile(QString in, QVector<QPoint> & polyPoints)
 {
     QFile myFile(in);
     if(!myFile.open(QIODevice::ReadOnly))
@@ -54,8 +52,8 @@ void PathMaker::readFile(QString in)
     QString str = whole.readLine();
     while(!whole.atEnd()){
         QStringList list = str.split(' ');
-        int x = list.at(0).toInt()*10 + 10;
-        int y = list.at(1).toInt()*10 + 10;
+        int x = list.at(0).toInt()*12+10;
+        int y = list.at(1).toInt()*12+10;
         polyPoints << QPoint(x,y);
         str = whole.readLine();
     }
