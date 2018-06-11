@@ -1,5 +1,9 @@
 #include "pathmaker.h"
 #include "ui_pathmaker.h"
+#define LEFT 0
+#define RIGHT 1
+#define UP 2
+#define DOWN 3
 
 PathMaker::PathMaker(QWidget *parent) :
     QDialog(parent),
@@ -49,10 +53,20 @@ void PathMaker::readFile(QString in, QVector<QPoint> & polyPoints)
     QTextStream whole(&myFile);
 
     QString str = whole.readLine();
+
     while(!whole.atEnd()){
         QStringList list = str.split(' ');
-        int x = list.at(0).toInt()*12+10;
-        int y = list.at(1).toInt()*12+10;
+        int x = list.at(0).toInt();
+        int y = list.at(1).toInt();
+
+        if(in == "/Users/fullstackmachine/Desktop/BevCode/AdvAlg_221/W10/pathOnly.txt"){
+            xPt.push_back(x);
+            yPt.push_back(y);
+        }
+
+        //scaling to screen
+        x = x *12+10;
+        y = y * 12+10;
         polyPoints << QPoint(x,y);
         str = whole.readLine();
     }
@@ -61,6 +75,47 @@ void PathMaker::readFile(QString in, QVector<QPoint> & polyPoints)
 
 void PathMaker::Route()
 {
+    QString size= QString::number(xPt.size());
 
-    QMessageBox::information(this, "succotash", "molasses");
+    int hop = 1;
+    int dir = UP;
+    int prevDir = UP;
+    QString term = "";
+
+    for(int i = 0; i < xPt.size() - 1; i++){
+
+        if(xPt[i] != xPt[i + 1]){ //left or right
+            if(xPt[i] < xPt[i + 1])
+                dir = LEFT;
+            else
+                dir = RIGHT;
+        } else {// traveled up or down
+            if(yPt[i] < yPt[i + 1])
+                dir = UP;
+            else
+                dir = DOWN;
+        }
+
+        if(dir == prevDir)
+            hop++;
+        else{
+            term += dirToStr(dir) + QString::number(hop) + "\n";
+            hop = 1;
+            prevDir = dir;
+        }
+    }
+
+    QMessageBox::information(this, "boxy", term);
 }
+QString PathMaker::dirToStr(const int & d)
+{
+    if(d == LEFT)
+        return "LEFT ";
+    else if(d == RIGHT)
+        return "RIGHT ";
+    else if(d == UP)
+        return "UP ";
+    else //default
+        return "DOWN ";
+}
+
